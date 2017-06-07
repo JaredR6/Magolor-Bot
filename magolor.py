@@ -2,7 +2,6 @@
 
 import asyncio, aiohttp, discord, logging, random, sys, time
 from mcstatus import MinecraftServer
-from functools import wraps
 
 ## LOGGING
 
