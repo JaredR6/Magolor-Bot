@@ -101,8 +101,13 @@ async def on_message(message):
     async for command in onMessage.containsCommands(message.content):
         if command.auth > authLevel:
             if command.denyReply != None:
+                print('Prevented "{}" command from running.'.format(command.keyword))
                 await client.send_message(message.channel, str(command.denyReply))
         else:
+            print('User {}{} ran "{}" command.'.format(
+                  message.author.display_name, 
+                  ' ({})'.format(message.author.nick) if message.author.nick else '',
+                  command.keyword))
             await command.run(client, message)
             
 @client.event
@@ -131,10 +136,11 @@ async def flipCoin(client, message):
             stats[random.randint(0, 1)] += 1
         highest = ('', '')
         if stats[0] > stats[1]:
-            highest = ('**', '*')
+            highest = ('**', '')
         elif stats[1] > stats[0]:
-            highest = ('*', '**')
-        em = discord.Embed(title='Heads: {0}{2}{0} | Tails: {1}{3}{1}'.format(*highest, *stats), colour=0x066BFB)
+            highest = ('', '**')
+        result = '{0}Heads: {2}{0} | {1}Tails: {3}{1}'.format(*highest, *stats)
+        em = discord.Embed(description=result, colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
     except:
         if len(words) == 2 and words[1] == 'me': return
@@ -223,21 +229,56 @@ async def sendPoyo(client, message):
     tmp = await client.send_message(message.channel, 'https://i.imgur.com/72Whn87.png')
     asyncio.sleep(120)
     await client.delete_message(tmp)
+    
+async def getInfo(client, message):
+    member = message.author
+    args = message.content.split()
+    if len(args) > 1: member = findUser(message.server, " ".join(args[1:]))
+    creationTime = discord.utils.snowflake_time(member.id).strftime('%B %d %Y at %I:%M %p')
+    joined = member.joined_at.strftime('%B %d %Y at %I:%M %p')
+    status = str(member.status)[0].upper() + str(member.status)[1:]
+    nameColor = member.color
+    mainRole = member.top_role
+    em = discord.Embed(title='Profile for {}'.format(member.name), colour=0x066BFB)
+    em.set_thumbnail(url=member.avatar_url)
+    em.add_field(name='Full Name', value='{}#{}'.format(member.name, member.discriminator))
+    em.add_field(name='Current Name', value=member.display_name)
+    em.add_field(name='Discord Join Time', value=creationTime)
+    em.add_field(name='Server Join Time', value=joined)
+    em.add_field(name='Current Status', value=status)
+    em.add_field(name='Current Game', value=member.game.name if member.game else 'None')
+    em.add_field(name='Color', value=member.color)
+    em.add_field(name='Top Role', value=member.top_role.name)
+    em.add_field(name='Is a bot?', value=('Yes' if member.bot else 'No!'))
+    em.set_footer(text='Retrieved on {}'.format(time.strftime('%B %d at %I:%M %p')),
+                  icon_url=(await client.application_info()).icon_url)
+    await client.send_message(message.channel, embed=em)
+
+## SUBFUNCTIONS
+
+def findUser(server, search):
+    search = search.lower()
+    for member in server.members:
+        if (search == member.name.lower() or 
+            search == member.id.lower() or
+            (member.nick and search == member.nick.lower())):
+            return member
+    return None
 
 
 ## INITIALIZATION
 
 token=''
 with open('token.txt', 'r') as tokenFile:
-    token=tokenFile.readLine()
+    token=tokenFile.readline()
 
-game = ChatCommand('!game', 0, changeGame, auth=3)
-roll = ChatCommand('!roll', 0, rollRNG)
+game = ChatCommand('!game ', 0, changeGame, auth=3)
+roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
 status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
 mute = ChatCommand('!flip me', 0, rpMute)
 poyo = ChatCommand('poyo', 0, sendPoyo)
-
+info = ChatCommand('!info', 0, getInfo)
 
 
 onMessage.add(game)
@@ -246,6 +287,7 @@ onMessage.add(flip)
 onMessage.add(status)
 onMessage.add(mute)
 onMessage.add(poyo)
+onMessage.add(info)
 
 def run():
     client.run(token)
