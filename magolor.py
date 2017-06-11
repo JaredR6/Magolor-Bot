@@ -70,6 +70,9 @@ class ChatCommandList():
         for key in self.commands:
             if self.commands[key].matches(content.lower()):
                 yield self.commands[key]
+                
+class DoctorQuote():
+    pass
         
         
 
@@ -311,3 +314,4 @@ def run():
 if __name__ == '__main__':
     run()
     
+'https://i.imgur.com/qJdoSXo.png' # Starfleet logo
