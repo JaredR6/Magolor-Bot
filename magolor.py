@@ -234,6 +234,10 @@ async def getInfo(client, message):
     member = message.author
     args = message.content.split()
     if len(args) > 1: member = findUser(message.server, " ".join(args[1:]))
+    if not member:
+        em = discord.Embed(title='Could not find member!', colour=0x066BFB)
+        await client.send_message(message.channel, embed=em)
+        return
     creationTime = discord.utils.snowflake_time(member.id).strftime('%B %d %Y at %I:%M %p')
     joined = member.joined_at.strftime('%B %d %Y at %I:%M %p')
     status = str(member.status)[0].upper() + str(member.status)[1:]
@@ -253,14 +257,21 @@ async def getInfo(client, message):
     em.set_footer(text='Retrieved on {}'.format(time.strftime('%B %d at %I:%M %p')),
                   icon_url=(await client.application_info()).icon_url)
     await client.send_message(message.channel, embed=em)
+    
+async def robinSay(client, message, **robin):
+    em = discord.Embed(title='{}, Batman!'.format(
+        robin['lines'][random.randint(0, len(robin['lines'])-1)][:-1]), color=0xFF6C6C)
+    await client.send_message(message.channel, embed=em)
 
 ## SUBFUNCTIONS
 
 def findUser(server, search):
     search = search.lower()
+    print(search)
     for member in server.members:
+        print(member.name,'{}#{}'.format(member.name.lower(), member.discriminator), member.nick)
         if (search == member.name.lower() or 
-            search == member.id.lower() or
+            search == ('{}#{}'.format(member.name.lower(), member.discriminator)) or
             (member.nick and search == member.nick.lower())):
             return member
     return None
@@ -272,6 +283,10 @@ token=''
 with open('token.txt', 'r') as tokenFile:
     token=tokenFile.readline()
 
+holyLines = []
+with open('robin.txt', 'r') as robinFile:
+    holyLines = robinFile.readlines()
+
 game = ChatCommand('!game ', 0, changeGame, auth=3)
 roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
@@ -279,6 +294,7 @@ status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
 mute = ChatCommand('!flip me', 0, rpMute)
 poyo = ChatCommand('poyo', 0, sendPoyo)
 info = ChatCommand('!info', 0, getInfo)
+robin = ChatCommand('!robin', 0, robinSay, lines=holyLines)
 
 
 onMessage.add(game)
@@ -288,6 +304,7 @@ onMessage.add(status)
 onMessage.add(mute)
 onMessage.add(poyo)
 onMessage.add(info)
+onMessage.add(robin)
 
 def run():
     client.run(token)
