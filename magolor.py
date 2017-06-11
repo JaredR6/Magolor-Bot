@@ -269,7 +269,6 @@ def findUser(server, search):
     search = search.lower()
     print(search)
     for member in server.members:
-        print(member.name,'{}#{}'.format(member.name.lower(), member.discriminator), member.nick)
         if (search == member.name.lower() or 
             search == ('{}#{}'.format(member.name.lower(), member.discriminator)) or
             (member.nick and search == member.nick.lower())):
