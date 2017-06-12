@@ -82,7 +82,6 @@ class DoctorQuote():
         
     def getEmbed(self):
         desc = self.second if self.second else discord.Embed.Empty
-        #footerText = '- {}, {}, ({})[{}]'.format(self.attribute, self.media, self.source, self.link)
         footerText = '- {}, {}'.format(self.attribute, self.media)
         footerText += ', "{}"'.format(self.source) if self.source else ''
         em = discord.Embed(title=self.quote, description=desc, url=self.link)
@@ -344,5 +343,3 @@ def run():
     
 if __name__ == '__main__':
     run()
-    
-'https://i.imgur.com/qJdoSXo.png' # Starfleet logo
