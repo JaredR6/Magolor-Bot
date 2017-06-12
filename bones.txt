@@ -31,73 +31,39 @@ I'm a doctor, not a battery.;;Voyager;The Doctor;Gravity;http://memory-alpha.wik
 I'm a doctor, not a dragon-slayer.;;Voyager;The Doctor;Bliss;http://memory-alpha.wikia.com/wiki/Bliss_(episode);
 I'm a doctor, not a zookeeper.;;Voyager;The Doctor;Life Line;http://memory-alpha.wikia.com/wiki/Life_Line_(episode);
 I'm a doctor, not an engineer.;;Voyager;The Doctor;Flesh and Blood;http://memory-alpha.wikia.com/wiki/Flesh_and_Blood_(episode);
-
 I'm a physician, not an engineer.;;Voyager;Dr. Phlox;Doctor's Orders;http://memory-alpha.wikia.com/wiki/Doctor%27s_Orders_(episode);
-
 I'm a doctor, not a doorstop.;;Star Trek: First Contact;USS-Enterprise-E EMH Mark I;;http://memory-alpha.wikia.com/wiki/Star_Trek:_First_Contact;
 I am a doctor, not a commando.;Voyager;USS Prometheus EMH Mark II;Message In a Bottle;http://memory-alpha.wikia.com/wiki/Message_in_a_Bottle_(episode);
-
 I'm a soldier, not a diplomat.;;The Original Series;James T. Kirk;Errand of Mercy;http://memory-alpha.wikia.com/wiki/Errand_of_Mercy_(episode);
 You keep saying that. Are you a doctor, or aren't you?;;The Original Series;James T. Kirk;Amok Time;http://memory-alpha.wikia.com/wiki/Amok_Time_(episode);
-
 I'm a scientist, not a military man.;;The Original Series;Carl Jaeger;The Squire of Gothos;http://memory-alpha.wikia.com/wiki/Amok_Time_(episode);
-
 I'm sorry captain, but I'm an engineer, not a magician.;;Deep Space 9;Crewman Kellin;The Siege of AR-558;http://memory-alpha.wikia.com/wiki/The_Siege_of_AR-558_(episode);
-
 We're scientists, not diplomats.;;Deep Space 9;Gilora Rejal;Destiny;http://memory-alpha.wikia.com/wiki/Destiny_(episode);
-
 I'm an engineer, not a philosopher.;;Deep Space 9;Miles O'Brien;It's Only a Paper Moon;http://memory-alpha.wikia.com/wiki/It%27s_Only_a_Paper_Moon_(episode);
-
 Maybe you're not a soldier anymore.;You're right. I'm an engineer.;Deep Space 9;Garak, Miles O'Brien;Empok Nor;http://memory-alpha.wikia.com/wiki/Empok_Nor_(episode);
-
 I'm not a God, I'm a security officer.;;Deep Space 9;Odo;Treachery, Faith and the Great River;http://memory-alpha.wikia.com/wiki/Treachery,_Faith_and_the_Great_River_(episode);
-
 This is a Federation starship, not the Barge of the Dead!;;Voyager;The Doctor;Repentance;http://memory-alpha.wikia.com/wiki/Repentance_(episode);
-
 I'm a diagnostic tool, not an engineer.;;Voyager;Diagnostic Hologram;The Swarm;http://memory-alpha.wikia.com/wiki/The_Swarm_(episode);
-
 I'm a pilot, Harry, not a doctor!;;Voyager;Tom Paris;Message in a Bottle;http://memory-alpha.wikia.com/wiki/Message_in_a_Bottle_(episode);
-
 I'm an engineer, not a costume designer.;;Voyager;B'Elanna Torres;Virtuoso;http://memory-alpha.wikia.com/wiki/Virtuoso_(episode);
-
 This is a starship, not a nature preserve.;;Voyager;Kathryn Janeway;Someone to Watch Over Me;http://memory-alpha.wikia.com/wiki/Someone_to_Watch_Over_Me_(episode);
-
 This isn't shore leave, this is a research mission.;;Enterprise;T'Pol;Strange New World;http://memory-alpha.wikia.com/wiki/Strange_New_World_(episode);
-
 He doesn't need a physician, he needs a priest.;;Enterprise;T'Pau;Kir'Shara;http://memory-alpha.wikia.com/wiki/Kir%27Shara_(episode);
-
 I'm an actor, not a doctor.;;Trivial Pursuit Advertisement;DeForest Kelley (Leonard McCoy);;;
-
 You're a doctor, not a gambler.;;Print;Quark;Deep Space 9: The Big Game;http://memory-alpha.wikia.com/wiki/The_Big_Game;
-
 I thought you were a doctor, not a hacker.;;Print;Kira;Deep Space 9: Proud Helios;http://memory-alpha.wikia.com/wiki/Proud_Helios;
-
 Dr. Bashir, you're a doctor, not a first-contact specialist.;;Print;Miles O'Brien;Deep Space 9: Valhalla;http://memory-alpha.wikia.com/wiki/Valhalla_(novel);
-
 You're a doctor, not a Horta.;;Print;Leonard McCoy;The Return;http://memory-alpha.wikia.com/wiki/The_Return;
-
 I'm a doctor, not a computer.;;Print;EMH;Avenger;http://memory-alpha.wikia.com/wiki/Avenger;
-
 I'm a doctor, not an interior designer.;;Print;EMH (as McCoy);Avenger;http://memory-alpha.wikia.com/wiki/Avenger;
-
 I'm a doctor, not a target.;;Video Game;Leonard McCoy;Star Trek: Judgement Rites;http://memory-alpha.wikia.com/wiki/Star_Trek:_Judgment_Rites;
-
 I'm a doctor, not a sideshow.;;Print;Leonard McCoy;Avenger;http://memory-alpha.wikia.com/wiki/Avenger;
-
 I'm a doctor, not an engineer!;;Video Game;Leonard McCoy;Star Trek Online (S2E4: Everything Old is New Again);http://memory-alpha.wikia.com/wiki/Star_Trek_Online;
-
 I'm a doctor, not an archaeologist.;;Print;EMH;SCE: War Stories, Book 1;http://memory-alpha.wikia.com/wiki/War_Stories,_Book_1;
-
 I'm a doctor, not a concierge.;;Print;EMH;A Time to Sow;http://memory-alpha.wikia.com/wiki/A_Time_to_Sow;
-
 I'm a doctor, NOT a Space Marine!;;Video Game;EMH;Voyager - Elite Force;http://memory-alpha.wikia.com/wiki/Star_Trek:_Voyager:_Elite_Force;
-
 I am an Emergency Medical Hologram, not a miracle worker!;;Video Game;EMH;Star Trek Online (Khitomer Crisis Mission);http://memory-alpha.wikia.com/wiki/Star_Trek_Online;
-
 I'm a doctor, not a quantum mechanic!;;Print;EMH Mark II;Spectre;http://memory-alpha.wikia.com/wiki/Spectre;
-
 Damn it Jim, I'm an engineer, not a conversationalist!;;Video Game;Brex;Bridge Commander;http://memory-alpha.wikia.com/wiki/Star_Trek:_Bridge_Commander;
-
 I'm an explorer, Donald, not a warrior.;;Print;Jean-Luc Picard;TNG: The Buried Age;http://memory-alpha.wikia.com/wiki/The_Buried_Age;
-
 Well, what did you expect? He's a doctor, not a security officer.;;Video Game;Q;Borg;http://memory-alpha.wikia.com/wiki/Star_Trek:_Borg;

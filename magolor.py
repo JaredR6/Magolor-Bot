@@ -72,7 +72,22 @@ class ChatCommandList():
                 yield self.commands[key]
                 
 class DoctorQuote():
-    pass
+    def __init__(self, quote, second, media, attribute, source, link, marks):
+        self.quote = '"{}"'.format(quote)
+        self.second = '{0}{1}{0}'.format('"' if marks != 'dq\n' else '', second) if second else None
+        self.media = media
+        self.attribute = attribute
+        self.source = source
+        self.link = link
+        
+    def getEmbed(self):
+        desc = self.second if self.second else discord.Embed.Empty
+        #footerText = '- {}, {}, ({})[{}]'.format(self.attribute, self.media, self.source, self.link)
+        footerText = '- {}, {}'.format(self.attribute, self.media)
+        footerText += ', "{}"'.format(self.source) if self.source else ''
+        em = discord.Embed(title=self.quote, description=desc, url=self.link)
+        em.set_footer(icon_url='https://i.imgur.com/qJdoSXo.png', text=footerText)
+        return em
         
         
 
@@ -109,7 +124,7 @@ async def on_message(message):
         else:
             print('User {}{} ran "{}" command.'.format(
                   message.author.display_name, 
-                  ' ({})'.format(message.author.nick) if message.author.nick else '',
+                  ' ({})'.format(message.author.name) if message.author.nick else '',
                   command.keyword))
             await command.run(client, message)
             
@@ -262,9 +277,11 @@ async def getInfo(client, message):
     await client.send_message(message.channel, embed=em)
     
 async def robinSay(client, message, **robin):
-    em = discord.Embed(title='{}, Batman!'.format(
-        robin['lines'][random.randint(0, len(robin['lines'])-1)][:-1]), color=0xFF6C6C)
+    em = discord.Embed(title='{}, Batman!'.format(random.choice(robin['lines'])[:-1]), color=0xFF6C6C)
     await client.send_message(message.channel, embed=em)
+    
+async def doctorSay(client, message, **doctor):
+    await client.send_message(message.channel, embed=random.choice(doctor['lines']).getEmbed())
 
 ## SUBFUNCTIONS
 
@@ -288,6 +305,18 @@ with open('token.txt', 'r') as tokenFile:
 holyLines = []
 with open('robin.txt', 'r') as robinFile:
     holyLines = robinFile.readlines()
+    
+doctorQuotes = []
+doctorLines = []
+with open('bones.txt', 'r') as bonesFile:
+    doctorLines = bonesFile.readlines()
+for line in doctorLines:
+    quote = line.split(';')
+    if len(quote) < 7: continue
+    doctorQuotes.append(DoctorQuote(*quote))
+    
+    
+
 
 game = ChatCommand('!game ', 0, changeGame, auth=3)
 roll = ChatCommand('!roll ', 0, rollRNG)
@@ -297,6 +326,7 @@ mute = ChatCommand('!flip me', 0, rpMute)
 poyo = ChatCommand('poyo', 0, sendPoyo)
 info = ChatCommand('!info', 0, getInfo)
 robin = ChatCommand('!robin', 0, robinSay, lines=holyLines)
+doctor = ChatCommand('!doctor', 0, doctorSay, lines=doctorQuotes)
 
 
 onMessage.add(game)
@@ -307,6 +337,7 @@ onMessage.add(mute)
 onMessage.add(poyo)
 onMessage.add(info)
 onMessage.add(robin)
+onMessage.add(doctor)
 
 def run():
     client.run(token)
