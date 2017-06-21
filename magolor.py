@@ -1,6 +1,7 @@
 ## IMPORTS
 
-import asyncio, aiohttp, discord, logging, random, sys, time
+import asyncio, aiohttp, discord, logging, os, random, sys, time
+from pathlib import Path
 from mcstatus import MinecraftServer
 
 ## LOGGING
@@ -110,27 +111,31 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.change_presence(game=discord.Game(name="15-122"))
+    await client.change_presence(game=discord.Game(name="nothing"))
     
 @client.event
 async def on_message(message):
     authLevel = onMessage.authRecords[message.author.id] = onMessage.authRecords.get(int(message.author.id), 0)
     async for command in onMessage.containsCommands(message.content):
-        if command.auth > authLevel:
-            if command.denyReply != None:
-                print('Prevented "{}" command from running.'.format(command.keyword))
-                await client.send_message(message.channel, str(command.denyReply))
+        print('User {}{} {} "{}" command.'.format(
+                message.author.display_name, 
+                ' ({})'.format(message.author.name) if message.author.nick else '',
+                'prevented from running' if command.auth > authLevel else 'ran',
+                command.keyword))
+        if command.auth > authLevel and command.denyReply != None:
+            await client.send_message(message.channel, str(command.denyReply))
         else:
-            print('User {}{} ran "{}" command.'.format(
-                  message.author.display_name, 
-                  ' ({})'.format(message.author.name) if message.author.nick else '',
-                  command.keyword))
             await command.run(client, message)
             
 @client.event
 async def on_member_update(before, after):
     async for command in onMemberUpdate.getCommands():
         await command.run(before, after)
+        
+@client.event
+async def on_server_join(server):
+    path = Path('/{}'.format(server.id))
+    path.mkdir(parents=True, exist_ok=True)
         
 ## COMMANDS
     
@@ -187,9 +192,16 @@ async def rollRNG(client, message):
         
 async def serverStatus(client, message, **servers):
     words = message.content.split()
-    mainResponse = ''
+    mainResponse = getStatus(servers['main'], 'main')
+    altResponse = getStatus(servers['alt'], 'alt')
+    currentTime = time.strftime('%B %d at %I:%M %p')
+    em = discord.Embed(title=currentTime, description='{}\n{}'.format(mainResponse, altResponse), colour=0x066BFB)
+    await client.send_message(message.channel, embed=em)
+    
+def getStatus(server, name):
+    response = ''
     try:
-        status = servers['main'].status()
+        status = server.status()
         playerCount = status.players.online
         playerWord = '' if playerCount == 1 else 's'
         players = ''
@@ -198,29 +210,16 @@ async def serverStatus(client, message, **servers):
             for player in status.players.sample:
                 playerNames.append(player.name)
             players = " [{}]".format(str(playerNames)[1:-1])
-        desc = status.description['text']
-        mainResponse = 'Main Server: {} player{} online{}, "{}"'.format(playerCount, playerWord, players, desc)
-    except:
-            mainResponse = 'Could not contact main server!'
-    altResponse = ''
-    try:
-        status = servers['alt'].status()
-        playerCount = status.players.online
-        playerWord = '' if playerCount == 1 else 's'
-        players = ''
-        playerNames = []
-        if status.players.sample:
-            for player in status.players.sample:
-                playerNames.append(player.name)
-            players = " [{}]".format(str(playerNames)[1:-1]).replace("'", "")
-        desc = status.description['text']
-        altResponse = 'Alt. Server: {} player{} online{}, "{}"'.format(playerCount, playerWord, players, desc)
-    except:
-        altResponse = 'Could not contact alternate server!'
-    currentTime = time.strftime('%B %d at %I:%M %p')
-    em = discord.Embed(title=currentTime, description='{}\n{}'.format(mainResponse, altResponse), colour=0x066BFB)
-    await client.send_message(message.channel, embed=em)
-    
+        desc = ''
+        try:
+            desc = status.description['text']
+        except:
+            desc = status.description
+        response = '{} Server: {} player{} online{}, "{}"'.format(name, playerCount, playerWord, players, desc)
+    except Exception as e:
+            response = 'Could not contact {} server!'.format(name)
+    return response
+
 async def rpMute(client, message):
     author = message.author
     server = message.server
@@ -250,7 +249,7 @@ async def sendPoyo(client, message):
 async def getInfo(client, message):
     member = message.author
     args = message.content.split()
-    if len(args) > 1: member = findUser(message.server, " ".join(args[1:]))
+    if len(args) > 1: member = member.server.get_member_named(" ".join(args[1:]))
     if not member:
         em = discord.Embed(title='Could not find member!', colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
@@ -282,18 +281,10 @@ async def robinSay(client, message, **robin):
 async def doctorSay(client, message, **doctor):
     await client.send_message(message.channel, embed=random.choice(doctor['lines']).getEmbed())
 
-## SUBFUNCTIONS
-
-def findUser(server, search):
-    search = search.lower()
-    print(search)
-    for member in server.members:
-        if (search == member.name.lower() or 
-            search == ('{}#{}'.format(member.name.lower(), member.discriminator)) or
-            (member.nick and search == member.nick.lower())):
-            return member
-    return None
-
+async def shutdown(client, message):
+    em = discord.Embed(title="Restarting!", color=0x066BFB)
+    await client.send_message(message.channel, embed=em)
+    sys.exit(0)
 
 ## INITIALIZATION
 
@@ -315,9 +306,10 @@ for line in doctorLines:
     doctorQuotes.append(DoctorQuote(*quote))
     
     
-
-
+    
 game = ChatCommand('!game ', 0, changeGame, auth=3)
+restart = ChatCommand('!restart', 0, shutdown, auth=5)
+
 roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
 status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
@@ -329,6 +321,8 @@ doctor = ChatCommand('!doctor', 0, doctorSay, lines=doctorQuotes)
 
 
 onMessage.add(game)
+onMessage.add(restart)
+
 onMessage.add(roll)
 onMessage.add(flip)
 onMessage.add(status)
