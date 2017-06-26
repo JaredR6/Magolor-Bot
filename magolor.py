@@ -285,6 +285,9 @@ async def shutdown(client, message):
     em = discord.Embed(title="Restarting!", color=0x066BFB)
     await client.send_message(message.channel, embed=em)
     sys.exit(0)
+    
+async def getGit(client, message):
+    await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
 
 ## INITIALIZATION
 
@@ -318,6 +321,7 @@ poyo = ChatCommand('poyo', 0, sendPoyo)
 info = ChatCommand('!info', 0, getInfo)
 robin = ChatCommand('!robin', 0, robinSay, lines=holyLines)
 doctor = ChatCommand('!doctor', 0, doctorSay, lines=doctorQuotes)
+github = ChatCommand('!github', 0, getGit)
 
 
 onMessage.add(game)
@@ -331,6 +335,7 @@ onMessage.add(poyo)
 onMessage.add(info)
 onMessage.add(robin)
 onMessage.add(doctor)
+onMessage.add(github)
 
 def run():
     client.run(token)
