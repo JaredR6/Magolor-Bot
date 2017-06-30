@@ -195,7 +195,7 @@ async def serverStatus(client, message, **servers):
     mainResponse = getStatus(servers['main'], 'main')
     altResponse = ''
     if servers.get('alt', None):
-        altResponse = '\n'getStatus(servers['alt'], 'alt')
+        altResponse = '\n'+getStatus(servers['alt'], 'alt')
     currentTime = time.strftime('%B %d at %I:%M %p')
     em = discord.Embed(title=currentTime, description='{}{}'.format(mainResponse, altResponse), colour=0x066BFB)
     await client.send_message(message.channel, embed=em)
