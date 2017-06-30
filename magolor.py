@@ -100,8 +100,8 @@ onMessage = ChatCommandList(authRecords)
 onMemberUpdate = CommandList()
 client = discord.Client()
 
-serverMain = MinecraftServer.lookup("127.0.0.1")
-serverAlt = MinecraftServer.lookup("127.0.0.1:25566")
+serverMain = MinecraftServer.lookup("jaredr.tk:25588")
+# serverAlt = MinecraftServer.lookup("127.0.0.1:25566")
 
 ## CLIENT EVENTS
 
@@ -193,9 +193,11 @@ async def rollRNG(client, message):
 async def serverStatus(client, message, **servers):
     words = message.content.split()
     mainResponse = getStatus(servers['main'], 'main')
-    altResponse = getStatus(servers['alt'], 'alt')
+    altResponse = ''
+    if servers.get('alt', None):
+        altResponse = '\n'getStatus(servers['alt'], 'alt')
     currentTime = time.strftime('%B %d at %I:%M %p')
-    em = discord.Embed(title=currentTime, description='{}\n{}'.format(mainResponse, altResponse), colour=0x066BFB)
+    em = discord.Embed(title=currentTime, description='{}{}'.format(mainResponse, altResponse), colour=0x066BFB)
     await client.send_message(message.channel, embed=em)
     
 def getStatus(server, name):
@@ -315,7 +317,8 @@ restart = ChatCommand('!restart', 0, shutdown, auth=5)
 
 roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
-status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
+# status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
+status = ChatCommand('!status', 0, serverStatus, main=serverMain)
 mute = ChatCommand('!flip me', 0, rpMute)
 poyo = ChatCommand('poyo', 0, sendPoyo)
 info = ChatCommand('!info', 0, getInfo)
