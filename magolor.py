@@ -4,6 +4,16 @@ import asyncio, aiohttp, discord, logging, os, random, sys, time
 from pathlib import Path
 from mcstatus import MinecraftServer
 
+## TOKEN
+
+tokenPath = Path("token.txt")
+if not tokenPath.is_file():
+	print("token.txt not found! Exiting...")
+	sys.exit(0)
+token=''
+with open('token.txt', 'r') as tokenFile:
+    token=tokenFile.readline()
+
 ## LOGGING
 
 logger = logging.getLogger('discord')
@@ -283,19 +293,24 @@ async def robinSay(client, message, **robin):
 async def doctorSay(client, message, **doctor):
     await client.send_message(message.channel, embed=random.choice(doctor['lines']).getEmbed())
 
-async def shutdown(client, message):
-    em = discord.Embed(title="Restarting!", color=0x066BFB)
+async def shutdownBot(client, message, **restart):
+    global logout
+    msg = ''
+    if restart['shut']:
+        logout = True
+        msg = 'Shutting down.'
+    else:
+        logout = False
+        msg = 'Restarting!'
+    logout = restart['shut']
+    em = discord.Embed(title=msg, color=0x066BFB)
     await client.send_message(message.channel, embed=em)
-    sys.exit(0)
+    await client.logout()
     
 async def getGit(client, message):
     await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
 
 ## INITIALIZATION
-
-token=''
-with open('token.txt', 'r') as tokenFile:
-    token=tokenFile.readline()
 
 holyLines = []
 with open('robin.txt', 'r') as robinFile:
@@ -313,7 +328,8 @@ for line in doctorLines:
     
     
 game = ChatCommand('!game ', 0, changeGame, auth=3)
-restart = ChatCommand('!restart', 0, shutdown, auth=5)
+restart = ChatCommand('!restart', 0, shutdownBot, auth=5, shut=False)
+shutdown = ChatCommand('!shutdown', 0, shutdownBot, auth=5, shut=True)
 
 roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
@@ -329,6 +345,7 @@ github = ChatCommand('!github', 0, getGit)
 
 onMessage.add(game)
 onMessage.add(restart)
+onMessage.add(shutdown)
 
 onMessage.add(roll)
 onMessage.add(flip)
@@ -341,7 +358,12 @@ onMessage.add(doctor)
 onMessage.add(github)
 
 def run():
+    global logout
+    logout = False
+    print('Starting bot...')
     client.run(token)
+    sys.exit(int(logout))
+    
     
 if __name__ == '__main__':
     run()
