@@ -294,15 +294,15 @@ async def doctorSay(client, message, **doctor):
     await client.send_message(message.channel, embed=random.choice(doctor['lines']).getEmbed())
 
 async def shutdownBot(client, message, **restart):
-    global relog
+    global logoff
     msg = ''
     if restart['shut']:
-        relog = False
+        logoff = True
         msg = 'Shutting down.'
     else:
-        relog = True
+        logoff = False
         msg = 'Restarting!'
-    relog = restart['shut']
+    logoff = restart['shut']
     em = discord.Embed(title=msg, color=0x066BFB)
     await client.send_message(message.channel, embed=em)
     await client.logout()
@@ -358,11 +358,11 @@ onMessage.add(doctor)
 onMessage.add(github)
 
 def run():
-    global relog
-    relog = True
+    global logoff
+    logoff = True
     print('Starting bot...')
     client.run(token)
-    sys.exit(int(relog))
+    sys.exit(int(logoff))
     
     
 if __name__ == '__main__':
