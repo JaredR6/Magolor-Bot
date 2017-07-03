@@ -294,18 +294,18 @@ async def doctorSay(client, message, **doctor):
     await client.send_message(message.channel, embed=random.choice(doctor['lines']).getEmbed())
 
 async def shutdownBot(client, message, **restart):
-    global logout
+    global relog
     msg = ''
     if restart['shut']:
-        logout = True
+        relog = False
         msg = 'Shutting down.'
     else:
-        logout = False
+        relog = True
         msg = 'Restarting!'
-    logout = restart['shut']
+    relog = restart['shut']
     em = discord.Embed(title=msg, color=0x066BFB)
     await client.send_message(message.channel, embed=em)
-    await client.logout()
+    await client.relog()
     
 async def getGit(client, message):
     await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
@@ -358,11 +358,11 @@ onMessage.add(doctor)
 onMessage.add(github)
 
 def run():
-    global logout
-    logout = False
+    global relog
+    relog = True
     print('Starting bot...')
     client.run(token)
-    sys.exit(int(logout))
+    sys.exit(int(relog))
     
     
 if __name__ == '__main__':
