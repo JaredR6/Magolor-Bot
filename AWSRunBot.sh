@@ -9,7 +9,6 @@ git init .
 git remote add -t /* -f origin https://github.com/PKAnti/Webster-Bot.git
 git checkout master
 
-cd Webster-Bot
 echo $TOKEN > token.txt
 
 timestamp() {
@@ -28,3 +27,4 @@ while [[ $ret_code == 1 ]]; do
     fi
 done
 
+sudo halt
