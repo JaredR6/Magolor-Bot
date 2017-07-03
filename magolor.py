@@ -305,7 +305,7 @@ async def shutdownBot(client, message, **restart):
     relog = restart['shut']
     em = discord.Embed(title=msg, color=0x066BFB)
     await client.send_message(message.channel, embed=em)
-    await client.relog()
+    await client.logout()
     
 async def getGit(client, message):
     await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
