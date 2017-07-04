@@ -297,10 +297,10 @@ async def shutdownBot(client, message, **restart):
     global logoff
     msg = ''
     if restart['shut']:
-        logoff = True
+        logoff = False
         msg = 'Shutting down.'
     else:
-        logoff = False
+        logoff = True
         msg = 'Restarting!'
     logoff = restart['shut']
     em = discord.Embed(title=msg, color=0x066BFB)
@@ -362,7 +362,7 @@ def run():
     logoff = True
     print('Starting bot...')
     client.run(token)
-    sys.exit(int(logoff))
+    sys.exit(1-int(logoff))
     
     
 if __name__ == '__main__':
