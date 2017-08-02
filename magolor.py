@@ -134,7 +134,7 @@ async def on_message(message):
                 command.keyword))
         if command.auth > authLevel and command.denyReply != None:
             await client.send_message(message.channel, str(command.denyReply))
-        else:
+        elif command.auth <= authLevel:
             await command.run(client, message)
             
 @client.event
