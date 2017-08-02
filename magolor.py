@@ -182,6 +182,10 @@ async def flipCoin(client, message):
         roll = 'Heads!' if random.randint(0, 1) else 'Tails!'
         em = discord.Embed(title=roll, colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
+        
+async def coinGen(x):
+    for i in range(x):
+        yield random.randint(0, 1)
     
 async def rollRNG(client, message):
     try:
