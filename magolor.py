@@ -168,7 +168,7 @@ async def flipCoin(client, message):
             c = min(200000, count - i*200000)
             for i in range(count):
                 stats[random.randint(0,1)] += 1
-            asyncio.sleep(.1)
+            await asyncio.sleep(.1)
         highest = ('', '')
         if stats[0] > stats[1]:
             highest = ('**', '')
@@ -369,7 +369,7 @@ def run():
     logoff = True
     print('Starting bot...')
     client.run(token)
-    sys.exit(1-int(logoff))
+    sys.exit(int(logoff)) # This will be fixed for clarity
     
     
 if __name__ == '__main__':
