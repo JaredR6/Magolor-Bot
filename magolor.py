@@ -8,8 +8,8 @@ from mcstatus import MinecraftServer
 
 tokenPath = Path("token.txt")
 if not tokenPath.is_file():
-	print("token.txt not found! Exiting...")
-	sys.exit(0)
+    print("token.txt not found! Exiting...")
+    sys.exit(0)
 token=''
 with open('token.txt', 'r') as tokenFile:
     token=tokenFile.readline()
@@ -164,8 +164,8 @@ async def flipCoin(client, message):
         if count < 2: raise Exception()
         stats = [0, 0]
         count = min(100000000, count)
-        for i in range(count):
-            stats[random.randint(0, 1)] += 1
+        async for i in coinGen(count):
+            stats[i] += 1
         highest = ('', '')
         if stats[0] > stats[1]:
             highest = ('**', '')
@@ -179,6 +179,10 @@ async def flipCoin(client, message):
         roll = 'Heads!' if random.randint(0, 1) else 'Tails!'
         em = discord.Embed(title=roll, colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
+        
+async def coinGen(x):
+    for i in range(x):
+        yield random.randint(0, 1)
     
 async def rollRNG(client, message):
     try:
