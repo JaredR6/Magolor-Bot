@@ -158,17 +158,19 @@ async def changeGame(client, message):
         
 async def flipCoin(client, message):
     words = message.content.split()
+    tmpMSG = await client.send_message(message.channel, embed=discord.Embed(title='Computing "{0}", please wait...'.format(message.content), colour=0x066BFB))
     try:
         if len(words) == 1: raise Exception()
         count = int(words[1])
         if count < 2: raise Exception()
         stats = [0, 0]
-        count = min(10000000, count)
-        for i in range(math.ceil(count/200000)):
-            c = min(200000, count - i*200000)
-            for i in range(count):
+        count = min(1000000, count)
+        for i in range(int(count/200000)): # Prevent blocking...
+            for i in range(200000):
                 stats[random.randint(0,1)] += 1
-            await asyncio.sleep(.1)
+            await asyncio.sleep(.1) # ... via sleep call
+        for i in range(count%200000): # remainder
+            stats[random.randint(0,1)] += 1
         highest = ('', '')
         if stats[0] > stats[1]:
             highest = ('**', '')
@@ -176,12 +178,12 @@ async def flipCoin(client, message):
             highest = ('', '**')
         result = '{0}Heads: {2}{0} | {1}Tails: {3}{1}'.format(*highest, *stats)
         em = discord.Embed(description=result, colour=0x066BFB)
-        await client.send_message(message.channel, embed=em)
+        await client.edit_message(tmpMSG, embed=em)
     except:
         if len(words) == 2 and words[1] == 'me': return
         roll = 'Heads!' if random.randint(0, 1) else 'Tails!'
         em = discord.Embed(title=roll, colour=0x066BFB)
-        await client.send_message(message.channel, embed=em)
+        await client.edit_message(tmpMSG, embed=em)
         
 async def coinGen(x):
     for i in range(x):
@@ -369,7 +371,7 @@ def run():
     logoff = True
     print('Starting bot...')
     client.run(token)
-    sys.exit(int(logoff)) # This will be fixed for clarity
+    sys.exit(int(logoff))
     
     
 if __name__ == '__main__':
