@@ -157,6 +157,7 @@ async def changeGame(client, message):
     await client.change_presence(game=discord.Game(name=gameName))
         
 async def flipCoin(client, message):
+    MAXFLIP = 4000000
     words = message.content.split()
     tmpMSG = await client.send_message(message.channel, embed=discord.Embed(title='Computing "{0}", please wait...'.format(message.content), colour=0x066BFB))
     try:
@@ -164,7 +165,7 @@ async def flipCoin(client, message):
         count = int(words[1])
         if count < 2: raise Exception()
         stats = [0, 0]
-        count = min(1000000, count)
+        count = min(MAXFLIP, count)
         for i in range(int(count/200000)): # Prevent blocking...
             for i in range(200000):
                 stats[random.randint(0,1)] += 1
@@ -178,6 +179,8 @@ async def flipCoin(client, message):
             highest = ('', '**')
         result = '{0}Heads: {2}{0} | {1}Tails: {3}{1}'.format(*highest, *stats)
         em = discord.Embed(description=result, colour=0x066BFB)
+        if count == MAXFLIP:
+            em.set_footer(text='Note: Maximum flip count is {0}.'.format(MAXFLIP))
         await client.edit_message(tmpMSG, embed=em)
     except:
         if len(words) == 2 and words[1] == 'me': return
