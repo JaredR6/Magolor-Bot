@@ -1,6 +1,6 @@
 ## IMPORTS
 
-import asyncio, aiohttp, discord, logging, os, random, sys, time
+import asyncio, aiohttp, discord, logging, math, os, random, sys, time
 from pathlib import Path
 from mcstatus import MinecraftServer
 
@@ -8,8 +8,8 @@ from mcstatus import MinecraftServer
 
 tokenPath = Path("token.txt")
 if not tokenPath.is_file():
-	print("token.txt not found! Exiting...")
-	sys.exit(0)
+    print("token.txt not found! Exiting...")
+    sys.exit(0)
 token=''
 with open('token.txt', 'r') as tokenFile:
     token=tokenFile.readline()
@@ -163,9 +163,12 @@ async def flipCoin(client, message):
         count = int(words[1])
         if count < 2: raise Exception()
         stats = [0, 0]
-        count = min(100000000, count)
-        for i in range(count):
-            stats[random.randint(0, 1)] += 1
+        count = min(10000000, count)
+        for i in range(math.ceil(count/200000)):
+            c = min(200000, count - i*200000)
+            for i in range(count):
+                stats[random.randint(0,1)] += 1
+            asyncio.sleep(.1)
         highest = ('', '')
         if stats[0] > stats[1]:
             highest = ('**', '')
