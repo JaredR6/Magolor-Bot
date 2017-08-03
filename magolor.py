@@ -1,6 +1,7 @@
 ## IMPORTS
 
 import asyncio, aiohttp, discord, logging, math, os, random, sys, time
+from collections import namedtuple
 from pathlib import Path
 from mcstatus import MinecraftServer
 
@@ -321,6 +322,9 @@ async def shutdownBot(client, message, **restart):
     
 async def getGit(client, message):
     await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
+    
+async def doMath(client, message, **operations):
+    pass
 
 ## INITIALIZATION
 
@@ -336,8 +340,20 @@ for line in doctorLines:
     quote = line.split(';')
     if len(quote) < 7: continue
     doctorQuotes.append(DoctorQuote(*quote))
-    
-    
+
+Operation = namedtuple('Operation', ['fn', 'paren', 'rank', 'valid', 'invmsg'])
+operations = {
+    '+': Operation(lambda x,y: x+y, False, 1, lambda x, y: True, ''),
+    '-': Operation(lambda x,y: x-y, False, 1, lambda x, y: True, ''),
+    '*': Operation(lambda x,y: x*y, False, 2, lambda x, y: True, ''),
+    '/': Operation(lambda x,y: x/y, False, 2, lambda x, y: y != 0, 'Denominator cannot equal 0.'),
+    '//': Operation(lambda x,y: x//y, False, 2, lambda x, y: y != 0, 'Denominator cannot equal 0.'),
+    '%': Operation(lambda x,y: x%y, False, 3, lambda x, y: y != 0, 'Denominator cannot equal 0.'),
+    '**': Operation(lambda x,y: x**y, False, 4, lambda x, y: True, ''),
+    '_/': Operation(lambda x: x**.5, False, 5, lambda x: x >= 0, 'Operand of root must not be negative.'),
+    'log10(': Operation(lambda x: math.log10(x), True, 5, lambda x: x > 0, 'Operand of log must be positive.'),
+    'loge(': Operation(lambda x: math.log(x), True, 5, lambda x: x > 0, 'Operand of log must be positive.'),
+    'log2(': Operation(lambda x: math.log2(x), True, 5, lambda x: x > 0, 'Operand of log must be positive.')}
     
 game = ChatCommand('!game ', 0, changeGame, auth=3)
 restart = ChatCommand('!restart', 0, shutdownBot, auth=5, shut=False)
@@ -353,6 +369,7 @@ info = ChatCommand('!info', 0, getInfo)
 robin = ChatCommand('!robin', 0, robinSay, lines=holyLines)
 doctor = ChatCommand('!doctor', 0, doctorSay, lines=doctorQuotes)
 github = ChatCommand('!github', 0, getGit)
+math = ChatCommand('!math', 0, doMath, operations=operations)
 
 
 onMessage.add(game)
@@ -368,6 +385,7 @@ onMessage.add(info)
 onMessage.add(robin)
 onMessage.add(doctor)
 onMessage.add(github)
+
 
 def run():
     global logoff
