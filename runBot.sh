@@ -1,6 +1,6 @@
 # !/bin/bash
-mv token.txt Webster-Bot/token.txt
-cd Webster-Bot
+mv token.txt Magolor-Bot/token.txt
+cd Magolor-Bot
 git pull
 
 timestamp() {
