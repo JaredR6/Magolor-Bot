@@ -6,13 +6,18 @@ from mcstatus import MinecraftServer
 
 ## TOKEN
 
-tokenPath = Path("token.txt")
-if not tokenPath.is_file():
-    print("token.txt not found! Exiting...")
-    sys.exit(0)
-token=''
-with open('token.txt', 'r') as tokenFile:
-    token=tokenFile.readline()
+token = ''
+if len(sys.argv) == 1:
+    tokenPath = Path("token.txt")
+    if not tokenPath.is_file():
+        print("token.txt not found! Exiting...")
+        sys.exit(0)
+    token=''
+    with open('token.txt', 'r') as tokenFile:
+        token=tokenFile.readline()
+    token = token[:59]
+else:
+    token = sys.argv[1][:59]
 
 ## LOGGING
 
