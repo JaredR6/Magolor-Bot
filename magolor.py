@@ -110,7 +110,7 @@ onMessage = ChatCommandList(authRecords)
 onMemberUpdate = CommandList()
 client = discord.Client()
 
-serverMain = MinecraftServer.lookup("jaredr.tk:25588")
+serverMain = MinecraftServer.lookup("")
 # serverAlt = MinecraftServer.lookup("127.0.0.1:25566")
 
 ## CLIENT EVENTS
@@ -129,7 +129,8 @@ async def on_message(message):
     async for command in onMessage.containsCommands(message.content):
         print('User {}{} {} "{}" command.'.format(
                 message.author.display_name, 
-                ' ({})'.format(message.author.name) if message.author.nick else '',
+                ' ({})'.format(message.author.name) if message.server != None 
+                                                       and message.author.nick else '',
                 'prevented from running' if command.auth > authLevel else 'ran',
                 command.keyword))
         if command.auth > authLevel and command.denyReply != None:
@@ -183,9 +184,9 @@ async def flipCoin(client, message):
             em.set_footer(text='Note: Maximum flip count is {0}.'.format(MAXFLIP))
         await client.edit_message(tmpMSG, embed=em)
     except:
-        if len(words) == 2 and words[1] == 'me': return
-        roll = 'Heads!' if random.randint(0, 1) else 'Tails!'
-        em = discord.Embed(title=roll, colour=0x066BFB)
+        if not (len(words) == 2 and words[1] == 'me'):
+            roll = 'Heads!' if random.randint(0, 1) else 'Tails!'
+            em = discord.Embed(title=roll, colour=0x066BFB)
         await client.edit_message(tmpMSG, embed=em)
         
 async def coinGen(x):
@@ -209,7 +210,7 @@ async def rollRNG(client, message):
         em = discord.Embed(title='You rolled a {}!'.format(roll), colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
     except:
-        em = discord.Embed(title='Bad syntax!', colour=0x066BFB)
+        em = discord.Embed(title='Syntax: !roll [ d## | ##, ## ]', colour=0x066BFB)
         await client.send_message(message.channel, embed=em)
         
 async def serverStatus(client, message, **servers):
@@ -243,31 +244,10 @@ def getStatus(server, name):
     except Exception as e:
             response = 'Could not contact {} server!'.format(name)
     return response
-
-async def rpMute(client, message):
-    author = message.author
-    server = message.server
-    seconds = 15
-    muteRole = None
-    muteChannel = None
-    for role in server.roles:
-        if str(role) == 'Muted':
-            muteRole = role
-            break
-    for channel in server.channels:
-        if str(channel) == 'muted':
-            muteChannel = channel
-            break
-    if not muteRole or not muteChannel: return
-    await client.add_roles(author, muteRole)
-    await asyncio.sleep(3)
-    await client.send_message(muteChannel, '{} has been muted for {} seconds.'.format(author.name, seconds))
-    await asyncio.sleep(seconds-1)
-    await client.remove_roles(author, muteRole)
     
 async def sendPoyo(client, message):
     tmp = await client.send_message(message.channel, 'https://i.imgur.com/72Whn87.png')
-    asyncio.sleep(120)
+    await asyncio.sleep(120)
     await client.delete_message(tmp)
     
 async def getInfo(client, message):
@@ -283,7 +263,7 @@ async def getInfo(client, message):
     status = str(member.status)[0].upper() + str(member.status)[1:]
     nameColor = member.color
     mainRole = member.top_role
-    em = discord.Embed(title='Profile for {}'.format(member.name), colour=0x066BFB)
+    em = discord.Embed(title='Profile for {}'.format(member.name), colour=member.color)
     em.set_thumbnail(url=member.avatar_url)
     em.add_field(name='Full Name', value='{}#{}'.format(member.name, member.discriminator))
     em.add_field(name='Current Name', value=member.display_name)
@@ -292,7 +272,10 @@ async def getInfo(client, message):
     em.add_field(name='Current Status', value=status)
     em.add_field(name='Current Game', value=member.game.name if member.game else 'None')
     em.add_field(name='Color', value=member.color)
-    em.add_field(name='Top Role', value=member.top_role.name)
+    if member.top_role.name == '@everyone':
+        em.add_field(name='Top Role', value='None')
+    else:
+        em.add_field(name='Top Role', value=member.top_role.name)
     em.add_field(name='Is a bot?', value=('Yes' if member.bot else 'No!'))
     em.set_footer(text='Retrieved on {}'.format(time.strftime('%B %d at %I:%M %p')),
                   icon_url=(await client.application_info()).icon_url)
@@ -347,8 +330,7 @@ roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
 # status = ChatCommand('!status', 0, serverStatus, main=serverMain, alt=serverAlt)
 status = ChatCommand('!status', 0, serverStatus, main=serverMain)
-mute = ChatCommand('!flip me', 0, rpMute)
-poyo = ChatCommand('poyo', 0, sendPoyo)
+poyo = ChatCommand('poyo', 3, sendPoyo)
 info = ChatCommand('!info', 0, getInfo)
 robin = ChatCommand('!robin', 0, robinSay, lines=holyLines)
 doctor = ChatCommand('!doctor', 0, doctorSay, lines=doctorQuotes)
@@ -362,13 +344,12 @@ onMessage.add(shutdown)
 onMessage.add(roll)
 onMessage.add(flip)
 onMessage.add(status)
-onMessage.add(mute)
 onMessage.add(poyo)
 onMessage.add(info)
 onMessage.add(robin)
 onMessage.add(doctor)
 onMessage.add(github)
-
+    
 def run():
     global logoff
     logoff = True
