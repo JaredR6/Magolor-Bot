@@ -1,2 +1,2 @@
-# Webster-Bot
-Bot for my group of friends' discord chat.
+# Magolor-Bot
+Personal bot for various discord channels
