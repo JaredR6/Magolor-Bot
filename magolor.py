@@ -310,6 +310,15 @@ async def shutdownBot(client, message, **restart):
 async def getGit(client, message):
     await client.send_message(message.channel, 'https://github.com/PKAnti/Webster-Bot')
 
+async def echoMe(client, message):
+    words = message.content[6:]
+    em = discord.Embed(title='', color=0x066BFB)
+    em.set_footer(text='This is an echoed comment.')
+    tmpMSG = await client.send_message(message.channel, words)
+    await asyncio.sleep(3)
+    await client.edit_message(tmpMSG, embed=em)
+    
+    
 ## INITIALIZATION
 
 holyLines = []
@@ -330,6 +339,7 @@ for line in doctorLines:
 game = ChatCommand('!game ', 0, changeGame, auth=3)
 restart = ChatCommand('!restart', 0, shutdownBot, auth=5, shut=False)
 shutdown = ChatCommand('!shutdown', 0, shutdownBot, auth=5, shut=True)
+echo = ChatCommand('!echo ', 0, echoMe, auth=5)
 
 roll = ChatCommand('!roll ', 0, rollRNG)
 flip = ChatCommand('!flip', 0, flipCoin)
@@ -345,6 +355,7 @@ github = ChatCommand('!github', 0, getGit)
 onMessage.add(game)
 onMessage.add(restart)
 onMessage.add(shutdown)
+onMessage.add(echo)
 
 onMessage.add(roll)
 onMessage.add(flip)
